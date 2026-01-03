@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Dance Motion — магазин</title>
-  <!-- СТИЛИ ТВОИ (я не менял) -->
+  
   <style>
    :root{
       --brand-light: #e3f1fe;
@@ -24,13 +24,27 @@
       color: #0b1720;
       -webkit-font-smoothing:antialiased;
       -moz-osx-font-smoothing:grayscale;
+      width: 100%;
+      overflow-x: hidden;
     }
+
+    body.loading {
+  overflow: hidden;
+}
+
+
+.grid {
+  padding-left: 6px;
+  padding-right: 6px;
+}
+
+
 
     .categories {
   display: flex;
-  flex-wrap: wrap;           /* чтобы переносились на новую строку */
-  justify-content: center;   /* центрируем элементы */
-  gap: 10px;                 /* расстояние между кнопками */
+  flex-wrap: wrap;          
+  justify-content: center;   
+  gap: 10px;                 
   margin: 10px 0;
   padding: 0;
   list-style: none;
@@ -49,12 +63,13 @@
   background: #e3e6ea;
 }
 
-    .container{
-      width: 100%;
-      max-width:1100px;
-      margin:0 auto;
-      padding:12px;
-    }
+    .container {
+  width: 100%;
+  max-width: 1280px; 
+  margin: 0 auto;
+  padding: 16px;
+}
+
 
     /* Header */
     header{display:flex;align-items:center;gap:16px;justify-content:space-between;flex-wrap:wrap}
@@ -156,33 +171,49 @@
 .icon-count {
   margin-left: 1px;
   font-weight: 700;
-  color: #004f73; /* твой брендовый тёмный цвет */
+  color: #004f73; 
 }
 
-.img-box {
-  width: 430px;
-  height: 252px;
-  border-radius: 10px;
-  overflow: hidden;
-}
+
 
 .img-box img {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* заполняет, может обрезать края */
+  object-fit: contain; 
 }
+
+  
+
+.card {
+  max-width: 370px;   
+  width: 100%;
+  margin: 0 auto;     
+}
+
+.grid {
+  justify-items: center;
+}
+
+
+
+
+
+
 
 .new-label {
   position: absolute;
   top: 8px;
   left: 8px;
-  background: #004f73;  /* твой брендовый цвет */
+  background: #004f73;  
   color: #fff;
   padding: 4px 8px;
   border-radius: 6px;
   font-size: 12px;
   font-weight: bold;
 }
+
+
+
 
 
 
@@ -253,7 +284,7 @@
 .logo-svg path {
   stroke-dasharray: 5000;
   stroke-dashoffset: 5000;
-  animation: draw 4.5s ease-out forwards;
+  animation: draw 3.8s ease-out forwards;
   stroke: #004f73;
   stroke-width: 70;
   fill: none;
@@ -414,10 +445,20 @@
 <script type="module" src="/script.js"></script>
 
 <script>
-window.addEventListener("load", () => {
+document.addEventListener("DOMContentLoaded", () => {
+  const preloader = document.getElementById("preloader");
+
+  // основной таймер
   setTimeout(() => {
-    document.getElementById("preloader").classList.add("hide");
-  }, 4800); // чуть больше времени, чтобы анимация закончилась плавно
+    preloader.classList.add("hide");
+    document.body.classList.remove("loading");
+  }, 4500);
+
+  // аварийный фолбэк
+  setTimeout(() => {
+    preloader.classList.add("hide");
+    document.body.classList.remove("loading");
+  }, 6500);
 });
 </script>
 
