@@ -176,10 +176,12 @@
 
 
 
-.img-box img {
+.img-box img{
   width: 100%;
   height: 100%;
-  object-fit: contain; 
+  object-fit: contain;
+  display:block;
+  transform: scale(1.06);   /* чуть увеличиваем, чтобы заполняла больше */
 }
 
   
@@ -196,6 +198,16 @@
 
 
 
+.img-box{
+  height: 170px;
+  border-radius: 12px;
+  background: #fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding: 6px;          /* меньше воздуха */
+  overflow: hidden;
+}
 
 
 
@@ -252,10 +264,6 @@
     height: auto !important;
   }
 
-  .img-box {
-    width: 100%;
-    height: auto;
-  }
 }
 
 /* =============== CLEAN LINE-DRAW PRELOADER =============== */
@@ -295,6 +303,231 @@
     stroke-dashoffset: 0;
   }
 }
+
+/* ====== Footer (Dance Motion) — FIXED ====== */
+html { overflow-x: hidden; } /* страховка от вылезаний по X */
+
+.site-footer{
+  margin-top: 44px;
+  border-top: 1px solid rgba(0,0,0,0.06);
+  background: linear-gradient(180deg, #eaf5ff, #dbeeff);
+  position: relative;
+  overflow: hidden;
+
+  /* 🔥 важно: изолируем псевдо-элементы, чтобы не было “пятен” */
+  isolation: isolate;
+}
+
+/* декоративные “пятна” — теперь аккуратно и без засветов по краям */
+.site-footer::before,
+.site-footer::after{
+  content:"";
+  position:absolute;
+  pointer-events:none;
+  z-index: 0;
+}
+
+/* правое пятно */
+.site-footer::before{
+  top: -140px;
+  right: -220px;              /* дальше за край — не будет светить в видимой зоне */
+  width: 260px;
+  height: 260px;
+  background: radial-gradient(circle at 35% 35%, rgba(0,79,115,0.14), transparent 62%);
+  filter: blur(0px);          /* blur часто даёт “пятно” — убрали */
+}
+
+/* левое нижнее пятно */
+.site-footer::after{
+  bottom: -160px;
+  left: -180px;
+  width: 320px;
+  height: 320px;
+  background: radial-gradient(circle at 60% 60%, rgba(0,79,115,0.12), transparent 62%);
+}
+
+.footer-inner{
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 26px 16px;
+  display: grid;
+  grid-template-columns: 1.2fr .7fr .9fr .9fr;
+  gap: 18px;
+
+  position: relative;
+  z-index: 1; /* контент над декором */
+}
+
+.footer-col{
+  background: rgba(255,255,255,0.55);
+  border: 1px solid rgba(0,0,0,0.06);
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 10px 24px rgba(2,6,23,0.06);
+  backdrop-filter: blur(6px);
+}
+
+.footer-brand .footer-logo img{
+  width: 84px;
+  height: auto;
+  display: block;
+}
+
+.footer-title{
+  margin: 0 0 10px;
+  color: var(--brand-dark);
+  font-size: 14px;
+  letter-spacing: .2px;
+}
+
+.footer-text{
+  margin: 10px 0 0;
+  color: #204255;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.footer-text.small{ margin-top: 0; }
+
+.footer-badges{
+  display:flex;
+  flex-wrap:wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.f-badge{
+  display:inline-flex;
+  align-items:center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(0,79,115,0.10);
+  color: var(--brand-dark);
+  font-weight: 700;
+  font-size: 12px;
+  border: 1px solid rgba(0,79,115,0.14);
+}
+
+.footer-link,
+.footer-contact{
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  text-decoration: none;
+  color: #173445;
+  padding: 10px 10px;
+  border-radius: 12px;
+  transition: transform .15s ease, background .15s ease;
+  font-size: 13px;
+  border: 1px solid transparent;
+}
+
+.footer-link:hover,
+.footer-contact:hover{
+  background: rgba(255,255,255,0.72);
+  border-color: rgba(0,0,0,0.06);
+  transform: translateY(-1px);
+}
+
+.footer-link.as-btn{
+  background: transparent;
+  border: 0;
+  text-align: left;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.dot{
+  width: 8px;
+  height: 8px;
+  border-radius: 99px;
+  background: var(--brand-dark);
+  box-shadow: 0 0 0 4px rgba(0,79,115,0.14);
+}
+
+.footer-cta .footer-btn{
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 12px 14px;
+  margin-top: 10px;
+  border-radius: 14px;
+  background: var(--brand-dark);
+  color: #fff;
+  text-decoration: none;
+  font-weight: 800;
+  border: 1px solid rgba(255,255,255,0.18);
+  box-shadow: 0 12px 28px rgba(0,79,115,0.22);
+  transition: transform .15s ease, filter .15s ease;
+}
+
+.footer-cta .footer-btn:hover{
+  transform: translateY(-1px);
+  filter: brightness(1.02);
+}
+
+.footer-note{
+  margin: 10px 0 0;
+  color: rgba(23,52,69,0.8);
+  font-size: 12px;
+}
+
+.footer-bottom{
+  border-top: 1px solid rgba(0,0,0,0.06);
+  background: rgba(255,255,255,0.4);
+
+  position: relative;
+  z-index: 1; /* тоже над декором */
+}
+
+.footer-bottom-inner{
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 12px 16px;
+  display:flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  color: rgba(23,52,69,0.85);
+  font-size: 12px;
+}
+
+.footer-mini{
+  display:flex;
+  align-items:center;
+  gap: 10px;
+}
+
+.footer-mini-link{
+  color: rgba(23,52,69,0.85);
+  text-decoration: none;
+}
+
+.footer-mini-link:hover{
+  text-decoration: underline;
+}
+
+.sep{ opacity: .6; }
+
+/* mobile */
+@media (max-width: 900px){
+  .footer-inner{
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 560px){
+  .footer-inner{
+    grid-template-columns: 1fr;
+  }
+  .footer-bottom-inner{
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
 
 
   </style>
@@ -399,9 +632,7 @@
 <h3 style="margin-top:18px;color:var(--brand-dark)">Скидки</h3>
 <div id="discountsGrid" class="grid"></div>
 
-<footer>
-  © Dance Motion — Все права защищены. Контакты: +998(91)123-60-66 · Instagram: @dancemotion.uz
-</footer>
+
   </div>
 
   <div id="overlay" class="overlay"></div>
@@ -442,6 +673,86 @@
     <div id="profileBody" style="margin-top:12px"></div>
   </div>
 
+<footer class="site-footer">
+  <div class="footer-inner">
+    <!-- brand -->
+    <div class="footer-col footer-brand">
+      <div class="footer-logo">
+        <img src="/Images/логотип.png" alt="Dance Motion" />
+      </div>
+      <p class="footer-text">
+        Танцевальная одежда и туфли. Подбор по размеру, быстрые ответы и удобный заказ через Telegram.
+      </p>
+
+      <div class="footer-badges">
+        <span class="f-badge">Доставка</span>
+        <span class="f-badge">Кешбэк 5%</span>
+        <span class="f-badge">Новые коллекции</span>
+      </div>
+    </div>
+
+    <!-- links -->
+    <div class="footer-col">
+      <h4 class="footer-title">Навигация</h4>
+      <a class="footer-link" href="#productsGrid">Каталог</a>
+      <a class="footer-link" href="#discountsGrid">Скидки</a>
+      <button class="footer-link as-btn" id="footerOpenCart">Корзина</button>
+      <button class="footer-link as-btn" id="footerOpenProfile">Профиль</button>
+    </div>
+
+    <!-- contacts -->
+    <div class="footer-col">
+      <h4 class="footer-title">Контакты</h4>
+
+      <a class="footer-contact" href="tel:+998911236066">
+        <span class="dot"></span>
+        +998 (91) 123-60-66
+      </a>
+
+      <a class="footer-contact" href="https://t.me/dance_motion_bot" target="_blank" rel="noopener">
+        <span class="dot"></span>
+        Telegram: @dance_motion_bot
+      </a>
+
+      <a class="footer-contact" href="https://instagram.com/dancemotion.uz" target="_blank" rel="noopener">
+        <span class="dot"></span>
+        Instagram: @dancemotion.uz
+      </a>
+    </div>
+
+    <!-- CTA -->
+    <div class="footer-col footer-cta">
+      <h4 class="footer-title">Быстрый заказ</h4>
+      <p class="footer-text small">
+        Нажми кнопку — откроем Telegram и поможем оформить заказ за 1–2 минуты.
+      </p>
+
+      <a class="footer-btn" href="https://t.me/dance_motion_bot" target="_blank" rel="noopener">
+        Написать в Telegram
+      </a>
+
+      <p class="footer-note">Работаем ежедневно • 10:00–22:00</p>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <div class="footer-bottom-inner">
+      <span>© <span id="yearNow"></span> Dance Motion. Все права защищены.</span>
+
+      <div class="footer-mini">
+        <a class="footer-mini-link" href="/privacy.html">Политика конфиденциальности</a>
+        <span class="sep">•</span>
+        <a class="footer-mini-link" href="/offer.html">Публичная оферта</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+
+
+
+
 <script type="module" src="/script.js"></script>
 
 <script>
@@ -461,6 +772,25 @@ document.addEventListener("DOMContentLoaded", () => {
   }, 6500);
 });
 </script>
+<script>
+  document.getElementById("yearNow").textContent = new Date().getFullYear();
+
+  // если у тебя уже есть обработчики на #cartBtn и #profileBtn — используем их
+  const footerOpenCart = document.getElementById("footerOpenCart");
+  const footerOpenProfile = document.getElementById("footerOpenProfile");
+
+  if (footerOpenCart) footerOpenCart.addEventListener("click", () => {
+    const cartBtn = document.getElementById("cartBtn");
+    if (cartBtn) cartBtn.click();
+  });
+
+  if (footerOpenProfile) footerOpenProfile.addEventListener("click", () => {
+    const profileBtn = document.getElementById("profileBtn");
+    if (profileBtn) profileBtn.click();
+  });
+</script>
+
+
 
 
 
