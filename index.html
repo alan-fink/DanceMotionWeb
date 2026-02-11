@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Dance Motion — магазин</title>
-  <!-- СТИЛИ ТВОИ (я не менял) -->
+  
   <style>
    :root{
       --brand-light: #e3f1fe;
@@ -24,13 +24,27 @@
       color: #0b1720;
       -webkit-font-smoothing:antialiased;
       -moz-osx-font-smoothing:grayscale;
+      width: 100%;
+      overflow-x: hidden;
     }
+
+    body.loading {
+  overflow: hidden;
+}
+
+
+.grid {
+  padding-left: 6px;
+  padding-right: 6px;
+}
+
+
 
     .categories {
   display: flex;
-  flex-wrap: wrap;           /* чтобы переносились на новую строку */
-  justify-content: center;   /* центрируем элементы */
-  gap: 10px;                 /* расстояние между кнопками */
+  flex-wrap: wrap;          
+  justify-content: center;   
+  gap: 10px;                 
   margin: 10px 0;
   padding: 0;
   list-style: none;
@@ -49,12 +63,13 @@
   background: #e3e6ea;
 }
 
-    .container{
-      width: 100%;
-      max-width:1100px;
-      margin:0 auto;
-      padding:12px;
-    }
+    .container {
+  width: 100%;
+  max-width: 1280px; 
+  margin: 0 auto;
+  padding: 16px;
+}
+
 
     /* Header */
     header{display:flex;align-items:center;gap:16px;justify-content:space-between;flex-wrap:wrap}
@@ -156,33 +171,49 @@
 .icon-count {
   margin-left: 1px;
   font-weight: 700;
-  color: #004f73; /* твой брендовый тёмный цвет */
+  color: #004f73; 
 }
 
-.img-box {
-  width: 430px;
-  height: 252px;
-  border-radius: 10px;
-  overflow: hidden;
-}
+
 
 .img-box img {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* заполняет, может обрезать края */
+  object-fit: contain; 
 }
+
+  
+
+.card {
+  max-width: 370px;   
+  width: 100%;
+  margin: 0 auto;     
+}
+
+.grid {
+  justify-items: center;
+}
+
+
+
+
+
+
 
 .new-label {
   position: absolute;
   top: 8px;
   left: 8px;
-  background: #004f73;  /* твой брендовый цвет */
+  background: #004f73;  
   color: #fff;
   padding: 4px 8px;
   border-radius: 6px;
   font-size: 12px;
   font-weight: bold;
 }
+
+
+
 
 
 
@@ -226,9 +257,87 @@
     height: auto;
   }
 }
+
+/* =============== CLEAN LINE-DRAW PRELOADER =============== */
+#preloader {
+  position: fixed;
+  inset: 0;
+  background: #d9ebfa; /* фон немного темнее — логотип хорошо виден */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999999;
+  transition: opacity 1s ease;
+}
+
+#preloader.hide {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.loader-logo {
+  width: 300px;
+  height: 300px;
+}
+
+/* ровная, чистая прорисовка */
+.logo-svg path {
+  stroke-dasharray: 5000;
+  stroke-dashoffset: 5000;
+  animation: draw 3.8s ease-out forwards;
+  stroke: #004f73;
+  stroke-width: 70;
+  fill: none;
+}
+
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+
   </style>
 </head>
 <body>
+
+  <!-- ===================== CLEAN DRAW PRELOADER ===================== -->
+<div id="preloader">
+  <div class="loader-logo">
+
+    <!-- SVG LOGO WITH DRAW ANIMATION -->
+    <svg class="logo-svg" viewBox="0 0 426 418" xmlns="http://www.w3.org/2000/svg">
+      <g transform="translate(0,418) scale(0.1,-0.1)"
+          fill="none" stroke-linecap="round">
+
+        <path d="M1985 3149 c-44 -5 -118 -19 -163 -29 -378 -90 -708 -383 -845 -750
+        -53 -143 -70 -234 -73 -405 -6 -304 69 -540 249 -775 178 -233 414 -383 711
+        -456 91 -22 118 -24 276 -21 140 3 193 8 265 26 228 58 416 165 583 332 158
+        158 276 364 329 574 25 100 27 126 27 285 0 201 -16 288 -86 469 -96 246 -335
+        503 -586 630 -191 96 -474 146 -687 120z m282 -94 c303 -32 621 -229 804 -497
+        176 -257 233 -616 148 -928 -92 -335 -374 -638 -708 -760 -151 -55 -211 -65
+        -396 -64 -153 0 -180 3 -270 28 -484 132 -829 554 -852 1041 -16 335 91 616
+        322 851 100 102 167 150 301 217 110 55 188 81 302 101 132 23 211 26 349 11z"/>
+
+        <path d="M1387 2604 c-4 -4 -7 -277 -7 -606 l1 -599 102 2 c176 2 243 14 334
+        59 138 68 247 207 289 369 18 73 12 126 -19 172 -35 52 -44 47 -51 -33 -19
+        -208 -108 -353 -264 -430 -61 -30 -76 -33 -179 -37 l-113 -3 0 148 c-1 82 -3
+        310 -6 507 l-5 357 149 0 c248 0 371 -36 487 -142 69 -63 106 -116 139 -199
+        79 -200 75 -435 -12 -607 -72 -145 -238 -316 -388 -403 l-59 -34 54 -3 c79 -5
+        173 43 277 141 92 87 152 169 251 347 187 334 447 740 475 740 2 0 3 -78 3
+        -172 0 -95 1 -309 3 -475 l2 -303 45 0 45 0 0 545 0 545 -31 0 c-97 0 -189
+        -107 -410 -478 -55 -91 -101 -167 -102 -169 -2 -1 -4 27 -5 63 -2 76 -31 215
+        -62 296 -47 125 -168 262 -289 327 -106 56 -190 72 -431 78 -118 3 -218 2
+        -223 -3z"/>
+
+      </g>
+    </svg>
+
+  </div>
+</div>
+<!-- =============== END PRELOADER =============== -->
+
+  
 
   <div class="container">
     <header>
@@ -333,185 +442,29 @@
     <div id="profileBody" style="margin-top:12px"></div>
   </div>
 
-<script src="/script.js"></script>
+<script type="module" src="/script.js"></script>
 
 <script>
-/* Фильтры: ровно 6 кнопок и исключающая фильтрация.
-   Вставьте этот блок после того, как карточки уже отрисованы в DOM. */
-document.addEventListener('DOMContentLoaded', () => {
-  const navEl = document.getElementById('categoryNav');
-  const productsGrid = document.getElementById('productsGrid');
-  const shoesGrid = document.getElementById('shoesGrid');
-  const discountsGrid = document.getElementById('discountsGrid');
-  const searchInput = document.getElementById('searchInput');
-  const searchBtn = document.getElementById('searchBtn');
-  const shopNow = document.getElementById('shopNow');
+document.addEventListener("DOMContentLoaded", () => {
+  const preloader = document.getElementById("preloader");
 
-  if (!navEl || !productsGrid) return console.warn('Фильтры: нет #categoryNav или #productsGrid');
+  // основной таймер
+  setTimeout(() => {
+    preloader.classList.add("hide");
+    document.body.classList.remove("loading");
+  }, 4500);
 
-  // Жёстко зафиксированный порядок фильтров (6 штук), "Мужчинам" удалён.
-  const FILTERS = ['Все', 'Женщинам', 'Девочкам', 'Мальчикам', 'Скидки'];
-
-  // Получить все карточки (включая те, что внутри shoesGrid/discountsGrid)
-  function allCards() {
-    const selector = '.card';
-    const cards = Array.from(document.querySelectorAll(selector));
-    return cards;
-  }
-
-  // Вспомогательные: получить атрибуты карточки (категория, пол, скидка)
-  function readCardData(card) {
-    const dataCat = (card.dataset.category || '').toString().trim();
-    const dataGender = (card.dataset.gender || '').toString().trim();
-    const dataDisc = (String(card.dataset.discount || '') === 'true') || !!card.querySelector('.new-label') || card.classList.contains('discount');
-    // fallback: попробовать парсить .meta вида "Категория: Девочкам" или "Туфли • Девочкам"
-    let metaText = '';
-    const metaEl = card.querySelector('.meta');
-    if (metaEl) metaText = metaEl.textContent.trim();
-    // parse possible "Категория: Девочкам" or "Туфли • Девочкам"
-    let fallbackCat = '', fallbackGender = '';
-    if (metaText) {
-      // если есть "Категория:" — взять слово после
-      const m = /Категория[:\s]*([^•\n\r]+)/i.exec(metaText);
-      if (m) fallbackCat = m[1].trim();
-      // если есть '•' разделитель
-      const parts = metaText.split('•').map(s=>s.trim()).filter(Boolean);
-      if (parts.length === 2) { fallbackCat = fallbackCat || parts[0]; fallbackGender = parts[1]; }
-      // также искать слова 'жен' / 'дев' / 'мальч'
-      if(!fallbackGender) {
-        if (/жен/i.test(metaText)) fallbackGender = 'Женщинам';
-        if (/девочк/i.test(metaText)) fallbackGender = 'Девочкам';
-        if (/мальчик/i.test(metaText)) fallbackGender = 'Мальчикам';
-        if (/муж/i.test(metaText) && !/мальчик/i.test(metaText)) fallbackGender = 'Мужчинам';
-      }
-    }
-    return {
-      category: dataCat || fallbackCat || '',
-      gender: dataGender || fallbackGender || '',
-      discount: !!dataDisc
-    };
-  }
-
-  // рендерим фиксированные кнопки
-  function renderFilterButtons() {
-    navEl.innerHTML = '';
-    FILTERS.forEach((f, idx) => {
-      const btn = document.createElement('button');
-      btn.className = 'cat-btn';
-      btn.textContent = f;
-      btn.dataset.filter = f;
-      if (idx === 0) btn.classList.add('active');
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        applyFilter(f, searchInput ? searchInput.value.trim() : '');
-      });
-      navEl.appendChild(btn);
-    });
-  }
-
-  // Основная функция: применить фильтр + поиск
-  function applyFilter(filter, search) {
-    const q = (search || '').toLowerCase();
-    const cards = allCards();
-
-    // Если фильтр "Все" — показываем все карточки и отображаем секции (обычное поведение)
-    const isShowAll = (filter === 'Все' || !filter);
-    if (isShowAll) {
-      // показать все карточки
-      cards.forEach(c => c.style.display = '');
-      // показать вспомогательные секции, если они существуют
-      if (shoesGrid) shoesGrid.style.display = '';
-      if (discountsGrid) discountsGrid.style.display = '';
-      // если есть поисковый запрос — применим по названию/мета
-      if (q) {
-        cards.forEach(card => {
-          const title = (card.querySelector('.title')?.textContent||'').toLowerCase();
-          const meta = (card.querySelector('.meta')?.textContent||'').toLowerCase();
-          card.style.display = (title.includes(q) || meta.includes(q)) ? '' : 'none';
-        });
-      }
-      return;
-    }
-
-    // Когда выбран конкретный фильтр (не 'Все'):
-    // скрываем вспомогательные секции, чтобы избежать дублей
-    if (shoesGrid) shoesGrid.style.display = 'none';
-    if (discountsGrid) discountsGrid.style.display = 'none';
-
-    // Фильтруем карточки строго: показываем только те, у которых совпадает фильтр
-    cards.forEach(card => {
-      const { category, gender, discount } = readCardData(card);
-      let visible = false;
-
-      if (filter === 'Скидки') {
-        visible = !!discount;
-      } else if (filter === 'Туфли') {
-        visible = (category && category.toLowerCase() === 'туфли') || (card.dataset.category && card.dataset.category.toLowerCase() === 'туфли');
-      } else {
-        // считаем фильтр как пол: Женщинам/Девочкам/Мальчикам
-        const g = (gender || '').trim();
-        // если карточка помечена 'Все' в поле gender — показываем для всех
-        if (g) {
-          visible = (g.toLowerCase() === filter.toLowerCase());
-        } else {
-          // если у карточки вообще нет gender — считаем, что товар **не** относится к фильтру
-          visible = false;
-        }
-      }
-
-      // применим также поиск (если visible true)
-      if (visible && q) {
-        const title = (card.querySelector('.title')?.textContent||'').toLowerCase();
-        const meta = (card.querySelector('.meta')?.textContent||'').toLowerCase();
-        visible = (title.includes(q) || meta.includes(q));
-      }
-
-      card.style.display = visible ? '' : 'none';
-    });
-  }
-
-  // Поиск: работает вместе с активным фильтром
-  if (searchBtn) {
-    searchBtn.addEventListener('click', () => {
-      const active = document.querySelector('.cat-btn.active');
-      const filter = active ? active.dataset.filter : 'Все';
-      applyFilter(filter, searchInput ? searchInput.value.trim() : '');
-    });
-  }
-  if (searchInput) {
-    searchInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') searchBtn.click(); });
-  }
-
-  // shopNow: применяет 'Все' и скроллит вниз
-  if (shopNow) {
-    shopNow.addEventListener('click', () => {
-      document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-      const allBtn = Array.from(document.querySelectorAll('.cat-btn')).find(b => b.dataset.filter === 'All' || b.dataset.filter === 'Все');
-      if (allBtn) allBtn.classList.add('active');
-      applyFilter('Все', '');
-      setTimeout(()=> {
-        window.scrollTo({ top: productsGrid.offsetTop - 20, behavior: 'smooth' });
-      }, 50);
-    });
-  }
-
-  // Инициализация — рендерим кнопки и проставляем начальную фильтрацию
-  renderFilterButtons();
-
-  // Если карточки рендерятся динамически, подождём небольшой момент и применим фильтр
-  setTimeout(() => applyFilter('Все', ''), 200);
-
-  // Также наблюдатель: если карточки появляются позже, повторно применяем активный фильтр
-  const obsTarget = productsGrid;
-  const mo = new MutationObserver((muts) => {
-    const active = document.querySelector('.cat-btn.active');
-    const filter = active ? active.dataset.filter : 'Все';
-    applyFilter(filter, searchInput ? searchInput.value.trim() : '');
-  });
-  mo.observe(obsTarget, { childList: true, subtree: true });
+  // аварийный фолбэк
+  setTimeout(() => {
+    preloader.classList.add("hide");
+    document.body.classList.remove("loading");
+  }, 6500);
 });
 </script>
+
+
+
+
 
 </body>
 </html>

@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>DanceMotion — demo</title>
+<meta name="description" content="Demo: splash + split login + animated catalog (mobile-first)" />
+<style>
+  /* --- Mobile first --- */
+  :root{
+    --bg: #eaf6fb;
+    --card: #ffffff;
+    --brand: #0b5f88;
+    --accent: #1aa7ff;
+    --muted: #6b7280;
+    --glass: rgba(255,255,255,0.6);
+    --shadow: 0 8px 30px rgba(4,28,49,0.08);
+  }
+  html,body{height:100%;margin:0;font-family:Inter, "Segoe UI", Roboto, Arial, sans-serif;background:var(--bg);color:#072033;-webkit-font-smoothing:antialiased}
+  .app{min-height:100vh;display:flex;flex-direction:column;align-items:stretch}
+
+  /* ---------- SPLASH ---------- */
+  .splash {
+    position:fixed;inset:0;background:linear-gradient(180deg,#e6fbff, #eaf6fb);
+    display:flex;align-items:center;justify-content:center;z-index:70;
+    transition:opacity .6s ease, transform .6s ease;
+  }
+  .splash.hidden { opacity:0; pointer-events:none; transform:scale(.98) }
+  .logo-wrap { width:240px;height:240px; display:flex;align-items:center;justify-content:center; }
+  svg.logo { width:160px;height:160px; filter:drop-shadow(0 8px 30px rgba(6,50,80,0.12)); }
+  /* stroke draw */
+  .logo path, .logo circle, .logo line { stroke:var(--brand); stroke-width:6; fill:none; stroke-linecap:round; stroke-linejoin:round; }
+  .dash { stroke-dasharray: 500; stroke-dashoffset: 500; animation: draw 1.6s ease forwards; }
+  @keyframes draw { to { stroke-dashoffset: 0; } }
+
+  /* glow/pulse after draw */
+  .logo-glow { position:absolute;width:240px;height:240px;border-radius:50%; background: radial-gradient(ellipse at center, rgba(26,167,255,0.18), rgba(10,80,120,0.03)); transform:scale(.9); opacity:0; animation: glow .8s ease .9s forwards; pointer-events:none; }
+  @keyframes glow { to { opacity:1; transform:scale(1.06); } }
+
+  /* ---------- Main container ---------- */
+  .main {
+    margin:12px;
+    margin-top:72px;
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+    align-items:stretch;
+    z-index:10;
+  }
+
+  /* header compact */
+  header.app-head { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:10px 6px; }
+  .brand { display:flex; align-items:center; gap:10px; }
+  .brand .logo-mini { width:46px;height:46px;border-radius:10px; background:linear-gradient(180deg,#fff,#f0fbff); display:flex;align-items:center;justify-content:center; box-shadow:var(--shadow) }
+  .brand h1 { font-size:18px;margin:0;color:var(--brand) }
+  .header-actions { display:flex; gap:8px; align-items:center; }
+
+  /* ---------- Split login panel ---------- */
+  .split-wrap { background:linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.85)); border-radius:18px; padding:16px; box-shadow:var(--shadow); overflow:hidden; position:relative; }
+  .split {
+    display:flex;
+    gap:12px;
+    align-items:stretch;
+    width:100%;
+    flex-direction:row;
+  }
+  /* On mobile stack vertically */
+  @media (max-width:680px){
+    .split { flex-direction:column; }
+  }
+  .panel {
+    flex:1;
+    min-height:220px;
+    border-radius:12px;
+    background:linear-gradient(180deg,#ffffff, #f5fbff);
+    padding:14px;
+    display:flex;flex-direction:column;gap:10px;justify-content:center;
+    transition:transform .6s cubic-bezier(.2,.9,.3,1), opacity .5s ease, filter .45s ease;
+  }
+  .panel.left { transform-origin:left center; }
+  .panel.right { transform-origin:right center; }
+
+  .panel h3 { margin:0;font-size:20px;color:var(--brand) }
+  .panel p { margin:2px 0 0;color:var(--muted);font-size:14px }
+  .small { font-size:13px;color:var(--muted) }
+
+  .actions { display:flex; gap:10px; margin-top:8px; flex-wrap:wrap; }
+  .btn { padding:10px 14px;border-radius:12px;border:0;cursor:pointer;font-weight:600 }
+  .btn.primary { background:var(--brand); color:#fff; box-shadow: 0 8px 20px rgba(11,95,136,0.12); }
+  .btn.ghost { background:transparent;border:1px solid rgba(11,95,136,0.08); color:var(--brand) }
+
+  /* triangle indicator */
+  .triangle {
+    position:absolute; width:24px; height:24px; transform:rotate(45deg);
+    background:linear-gradient(135deg, rgba(26,167,255,0.9), rgba(0,85,130,0.9));
+    border-radius:6px; box-shadow: 0 8px 18px rgba(10,80,120,0.18);
+    top:calc(50% - 12px); left:50%; transform-origin:center; transition:left .55s cubic-bezier(.2,.9,.3,1);
+  }
+  .triangle.left { left:14px; transform: rotate(45deg) }
+  .triangle.right { left: calc(100% - 38px); transform: rotate(45deg) }
+  @media (max-width:680px){
+    .triangle.left { left: calc(50% - 12px) }
+    .triangle.right { left: calc(50% - 12px) }
+  }
+
+  /* active state (right selected => show catalog) */
+  .split-wrap.catalog-open .panel.left { transform: translateX(-10%); opacity:.85; filter: blur(2px); }
+  .split-wrap.catalog-open .panel.right { transform: translateX(6%); opacity:1; }
+
+  /* small login form */
+  .login-form { display:flex;flex-direction:column;gap:8px; margin-top:6px }
+  .login-form input { padding:10px;border-radius:10px;border:1px solid #e6f2f8;background:transparent }
+  .muted { color:var(--muted); font-size:13px }
+
+  /* ---------- Catalog preview ---------- */
+  .catalog-wrap { margin-top:8px; display:block; transition:height .5s ease, opacity .5s ease; overflow:visible; }
+  .catalog-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; }
+  @media (min-width:760px){ .catalog-grid { grid-template-columns:repeat(3,1fr); } }
+  .card {
+    background:linear-gradient(180deg,#fff,#f8feff);
+    border-radius:14px;padding:10px;display:flex;flex-direction:column;gap:8px; align-items:center;
+    box-shadow: 0 10px 30px rgba(3,22,34,0.05);
+    transform-style:preserve-3d; transition: transform .45s cubic-bezier(.2,.9,.3,1), box-shadow .25s;
+  }
+  .card:hover { transform: translateY(-6px) rotateX(6deg); box-shadow: 0 20px 40px rgba(3,22,34,0.08); }
+  .card img { width:100%; height:120px; object-fit:cover; border-radius:10px; box-shadow: 0 8px 20px rgba(2,12,20,0.06) }
+  .card .title{ font-weight:700; color:#06374a; font-size:14px; text-align:center }
+  .card .price{ color:var(--brand); font-weight:800 }
+
+  /* when closed hide grid */
+  .catalog-hidden { display:none; opacity:0; height:0; }
+
+  /* fancy CTA */
+  .cta-row { display:flex; gap:8px; justify-content:center; margin-top:10px }
+
+  /* small footer note */
+  .note { margin-top:12px; font-size:13px; color:var(--muted); text-align:center }
+
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- SPLASH -->
+  <div id="splash" class="splash" role="dialog" aria-label="Splash">
+    <div class="logo-wrap">
+      <div class="logo-glow" id="logoGlow" aria-hidden="true"></div>
+      <!-- SVG logo: stylized DM inside circle. Stroke-draw animation via .dash class -->
+      <svg class="logo" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <circle cx="100" cy="100" r="84" class="dash" />
+        <path d="M48 138 L80 62 L112 138" class="dash" />
+        <path d="M108 62 L140 138" class="dash" />
+        <!-- "M" like shape and a D curve -->
+        <path d="M66 98 C84 62, 120 62, 128 98" class="dash" />
+      </svg>
+    </div>
+  </div>
+
+  <!-- HEADER -->
+  <header class="app-head">
+    <div class="brand">
+      <div class="logo-mini" aria-hidden="true">
+        <!-- mini logo (SVG small) -->
+        <svg width="36" height="36" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><circle cx="100" cy="100" r="80" fill="#fff" stroke="#0b5f88" stroke-width="6"/><text x="50%" y="55%" text-anchor="middle" font-size="64" fill="#0b5f88" font-family="Inter, Arial">DM</text></svg>
+      </div>
+      <div>
+        <h1>DanceMotion</h1>
+        <div class="small">Танцевальная одежда и туфли</div>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="btn ghost" id="openCatalogTop">Каталог</button>
+      <button class="btn ghost" id="openLoginTop">Войти</button>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- Split login / signup -->
+    <section class="split-wrap" id="splitWrap" aria-labelledby="panelTitle">
+      <div class="split">
+        <div class="panel left" id="leftPanel" role="region" aria-label="Existing customer">
+          <h3>Уже оформляли заказ?</h3>
+          <p class="small">Войдите по ID заказа или телефону, чтобы увидеть статус и повторить покупку.</p>
+
+          <div class="login-form" aria-hidden="false">
+            <input id="loginId" placeholder="ID заказа (например 505)" />
+            <input id="loginPhone" placeholder="Телефон для входа" />
+            <div class="actions">
+              <button class="btn primary" id="btnLogin">Войти</button>
+              <button class="btn ghost" id="btnAdmin">Админ</button>
+            </div>
+          </div>
+
+          <div style="margin-top:8px" class="muted">Быстрый доступ к созданным ранее заказам.</div>
+        </div>
+
+        <div class="panel right" id="rightPanel" role="region" aria-label="New customer">
+          <h3>Новый пользователь</h3>
+          <p class="small">Создайте заказ без регистрации — добавьте товары и нажмите Оформить.</p>
+
+          <div class="actions">
+            <button class="btn primary" id="btnNew">Оформить заказ</button>
+            <button class="btn ghost" id="btnPreview">Посмотреть каталог</button>
+          </div>
+
+          <div style="margin-top:8px" class="muted">Мы сохраним ID для удобства повторных покупок.</div>
+        </div>
+      </div>
+
+      <!-- triangle indicator -->
+      <div id="tri" class="triangle left" aria-hidden="true"></div>
+
+      <!-- catalog preview (hidden initially) -->
+      <div id="catalogWrap" class="catalog-wrap catalog-hidden" aria-hidden="true">
+        <div class="catalog-grid" id="catalogGrid" aria-live="polite">
+          <!-- product cards inserted by JS -->
+        </div>
+
+        <div class="cta-row">
+          <button class="btn primary" id="goCatalog">Открыть каталог</button>
+          <button class="btn ghost" id="closeCatalog">Свернуть</button>
+        </div>
+      </div>
+
+    </section>
+
+    <div class="note">Экран адаптирован под мобильные устройства — попробуй на телефоне для полного эффекта.</div>
+
+  </main>
+
+</div>
+
+<!-- ======= SCRIPT (module) ======= -->
+<script type="module">
+/*
+  Mobile-first demo:
+  - Splash animation auto-hides in ~2.2s
+  - Triangle toggles when user selects left/right actions
+  - btnNew opens catalog preview (simulating choosing new user -> catalog)
+  - Product cards are generated from PRODUCTS array (replace with your array)
+*/
+
+const splash = document.getElementById('splash');
+const tri = document.getElementById('tri');
+const splitWrap = document.getElementById('splitWrap');
+const leftPanel = document.getElementById('leftPanel');
+const rightPanel = document.getElementById('rightPanel');
+const catalogWrap = document.getElementById('catalogWrap');
+const catalogGrid = document.getElementById('catalogGrid');
+
+const btnLogin = document.getElementById('btnLogin');
+const btnNew = document.getElementById('btnNew');
+const btnPreview = document.getElementById('btnPreview');
+const btnAdmin = document.getElementById('btnAdmin');
+const openCatalogTop = document.getElementById('openCatalogTop');
+const openLoginTop = document.getElementById('openLoginTop');
+const btnGoCatalog = document.getElementById('goCatalog');
+const btnCloseCatalog = document.getElementById('closeCatalog');
+
+// demo products (use your PRODUCTS array)
+const PRODUCTS = [
+  {id:1, title:'Туфли Рейтинг - Белые', price:350000, img:'/Images/WHR.png'},
+  {id:2, title:'Рейтинг - Светло-Бежевые', price:350000, img:'/Images/PR.png'},
+  {id:3, title:'Латинские - Черные', price:350000, img:'/Images/BLT.PNG'},
+  {id:4, title:'Гетры - Черные', price:120000, img:'/Images/GET.PNG'}
+];
+
+// DRAW splash timeline
+function startSplashSequence(){
+  // stagger: after draw animation (1.6s) show glow then scale out
+  setTimeout(()=> {
+    // pulse then hide
+    splash.classList.add('hidePulse');
+    // remove splash after fade
+    setTimeout(()=> splash.classList.add('hidden'), 900);
+  }, 2000);
+}
+
+// toggle triangle position
+function setTriangle(side='left'){
+  tri.classList.remove('left','right');
+  tri.classList.add(side === 'left' ? 'left' : 'right');
+}
+
+// open / close catalog preview
+function openCatalog(){
+  catalogWrap.classList.remove('catalog-hidden');
+  splitWrap.classList.add('catalog-open');
+  catalogWrap.setAttribute('aria-hidden','false');
+}
+function closeCatalog(){
+  catalogWrap.classList.add('catalog-hidden');
+  splitWrap.classList.remove('catalog-open');
+  catalogWrap.setAttribute('aria-hidden','true');
+}
+
+// render product cards
+function renderProducts(){
+  catalogGrid.innerHTML = '';
+  PRODUCTS.forEach(p=>{
+    const el = document.createElement('div');
+    el.className = 'card';
+    // image fallback if not exist
+    const imgUrl = p.img || 'https://via.placeholder.com/300x200?text=product';
+    el.innerHTML = `
+      <img src="${imgUrl}" alt="${escapeHtml(p.title)}" loading="lazy" />
+      <div class="title">${escapeHtml(p.title)}</div>
+      <div class="price">${(Math.round(p.price)).toLocaleString()} сум</div>
+    `;
+    // clicking a card — quick add simulation
+    el.addEventListener('click', ()=> {
+      // here integrate with real cart: localStorage or window.placeOrder
+      alert('Добавлено в корзину (демо): ' + p.title);
+    });
+    catalogGrid.appendChild(el);
+  });
+}
+
+// escape helper
+function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]) }
+
+// init events
+btnLogin.addEventListener('click', ()=>{
+  // simulate login by id/phone: you can replace with your lookup
+  const id = document.getElementById('loginId').value.trim();
+  const phone = document.getElementById('loginPhone').value.trim();
+  if(id || phone){ alert('Вход (демо): ' + (id || phone)); setTriangle('left'); closeCatalog(); }
+  else alert('Введите ID или телефон');
+});
+
+btnAdmin.addEventListener('click', ()=> { alert('Открыть админ (демо)'); });
+
+btnNew.addEventListener('click', ()=>{
+  // selecting new user: move triangle to right and open catalog
+  setTriangle('right');
+  openCatalog();
+  renderProducts();
+});
+
+btnPreview.addEventListener('click', ()=>{
+  setTriangle('right');
+  openCatalog();
+  renderProducts();
+});
+
+openCatalogTop.addEventListener('click', ()=> { openCatalog(); renderProducts(); });
+openLoginTop.addEventListener('click', ()=> { closeCatalog(); setTriangle('left'); });
+
+// CTA inside catalog
+btnGoCatalog.addEventListener('click', ()=> {
+  // in real app navigate to catalog page
+  alert('Открываем полноразмерный каталог (демо)');
+});
+btnCloseCatalog.addEventListener('click', ()=> {
+  setTriangle('left');
+  closeCatalog();
+});
+
+// auto run splash
+document.addEventListener('DOMContentLoaded', ()=>{
+  // Start sequence: after small delay hide splash
+  startSplashSequence();
+  // allow clicking on splash to skip
+  splash.addEventListener('click', ()=> splash.classList.add('hidden'));
+});
+</script>
+</body>
+</html>
