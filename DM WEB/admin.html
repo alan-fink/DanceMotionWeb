@@ -77,7 +77,7 @@
 
         <div class="row">
           <div class="col">
-            <label class="muted">Примечание</label>
+            <label class="muted">Примечания</label>
             <input id="orderNote" />
           </div>
           <div style="width:220px">
@@ -109,7 +109,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebas
 import { getFirestore, doc, setDoc, getDoc, collection, getDocs, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 
-/* ====== Firebase config (вставь свой, если отличается) ====== */
+
 const firebaseConfig = {
   apiKey: "AIzaSyAgyk4fu88ZfHEXsFvpDtRHYJa2XxlPRQY",
   authDomain: "dancemotion-40d56.firebaseapp.com",
@@ -124,7 +124,7 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
-/* Телеграм и продукты (как у тебя) */
+
 const TELEGRAM_BOT_TOKEN = '8182609479:AAG7AqcB8naX92u2XlHkxwp9R9IBhEhfoW0';
 const TELEGRAM_CHAT_ID = '8492577684';
 
@@ -135,7 +135,34 @@ const PRODUCTS = [
   {id:4,title:'Туфли Рейтинг- Красные (Кожа)',price:350000},
   {id:5,title:'Туфли Рейтинг- Черные (Сатин)',price:350000},
   {id:6,title:'Туфли Рейтинг- Коричневые (Сатин)',price:350000},
+  {id:7, title:'Согревающие Чуни (Серые)', price:350000},
+  {id:8, title:'Согревающие Чуни (Небесно-голубой)', price:250000},
+  {id:9, title:'Согревающие Чуни (Темно-Фиолетовые)', price:250000},
+  {id:10, title:'Согревающие Чуни (Черные)', price:250000},
+  {id:11, title:'Согревающие Чуни (Градиент)', price:250000},
+  {id:12, title:'Согревающие Чуни (Розовые)', price:250000},
+  {id:13, title:'Стандартные туфли - (Шампань)', price:350000},
+  {id:14, title:'Стандартные туфли - (Белые)', price:350000},
+  {id:15, title:'Стандартные туфли - (Сатин)', price:350000},
+  {id:16, title:'Латинские туфли - (Светло-Бежевые)', price:350000},
+  {id:17, title:'Латинские туфли - (Черные)', price:350000},
+  {id:18, title:'Латинские туфли - (Сатин)', price:350000},
+  {id:19, title:'Латинские туфли - (Шампань)', price:350000},
+  {id:20, title:'Латинские туфли - (Градиент)', price:350000 },
+  {id:21, title:'Тренировочные туфли (Золотые Поцелуи)', price:350000},
+  {id:22, title:'Тренировочные туфли (Красные Поцелуи)', price:350000},
+  {id:23, title:'Тренировочные туфли (Градиентовые Поцелуи)', price:350000},
+  {id:24, title:'Туфли Рейтинг - (Сатин)', price:350000},
+  {id:25, title:'Туфли Рейтинг - (Белые)', price:350000},
+  {id:26, title:'Туфли Рейтинг - (Черные)', price:350000},
+  {id:27, title:'Туфли Рейтинг плетение - (Персиковые)', price:350000},
+  {id:28, title:'Туфли Рейтинг плетение - (Белые)', price:350000},
+  {id:29, title:'Туфли Рейтинг - (Черные)', price:350000},
+  {id:30, title:'Гетры - (Черные)', price:120000},
+  {id:31, title:'Гетры - (Белые)', price:120000},
+  {id:32, title:'Гетры - (Фирменный цвет DanceMotion)', price:120000},
 ];
+
 
 const LS_ORDERS = 'dm_orders_v1';
 
@@ -191,7 +218,7 @@ signOutBtn.addEventListener('click', async ()=> {
 
 onAuthStateChanged(auth, async (user)=>{
   if(user){
-    // показать UI только если email совпадает с тем, что записан в правилах (правила на стороне сервера)
+   
     adminEmailDisplay.textContent = user.email;
     signInBtn.style.display = 'none';
     signOutBtn.style.display = '';
@@ -273,7 +300,7 @@ async function renderOrdersFromFirestore(){
   `).join('');
 }
 
-/* ====== Open / delete / save ====== */
+
 function openOrderLocal(id){
   const orders = getOrdersLocal();
   const o = orders.find(x=>x.id === +id);
@@ -339,10 +366,10 @@ saveOrderBtn.addEventListener('click', async ()=>{
     total: price * qty, updatedAt: now, createdAt: now
   };
 
-  // если админ вошёл — записываем в Firestore, иначе — в локалку
+ 
   const currentUser = auth.currentUser;
   if(currentUser){
-    // записываем в Firestore
+ 
     const payload = Object.assign({}, orderData, { created_at: serverTimestamp(), updated_at: serverTimestamp() });
     try{
       await setDoc(doc(db,'orders', String(id)), payload, { merge:true });
@@ -353,7 +380,7 @@ saveOrderBtn.addEventListener('click', async ()=>{
     }catch(e){ console.error(e); alert('Ошибка при сохранении в Firestore: ' + e.message); }
   }
 
-  // fallback: локальная сохранилка
+
   let orders = getOrdersLocal();
   const idx = orders.findIndex(o=>o.id === id);
   if(idx >= 0) orders[idx] = orderData; else orders.push(orderData);
@@ -372,7 +399,7 @@ clearFormBtn.addEventListener('click', ()=> {
   productSelect.selectedIndex=0; productPrice.value = (PRODUCTS[0] && PRODUCTS[0].price) || ''; productQty.value = 1;
 });
 
-/* Делегирование кликов в списке заказов */
+
 ordersList.addEventListener('click', async (e)=>{
   const btn = e.target.closest('button');
   if(!btn) return;
@@ -387,7 +414,6 @@ ordersList.addEventListener('click', async (e)=>{
   }
 });
 
-/* Инициализация UI (показываем локальные заказы если не вошли) */
 buildProducts();
 renderOrdersLocal();
 
